@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  web:
+    container_name: dlp_system
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    stdin_open: true
+    tty: true
+    command: sh -c "sleep 2 && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - static_volume:/home/app/web/static
+      - ${PWD}/logs:/home/app/web/logs
+      - ./:/home/app/web
+    env_file:
+      - ./.env.local
+    expose:
+      - 8000
+    depends_on:
+      - db
+
+  db:
+    container_name: restaraunt_menu_db
+    restart: always
+    image: postgres:14.2-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.local.db
+    ports:
+      - 5432:5432
+
+
+volumes:
+  postgres_data:
+  static_volume:
