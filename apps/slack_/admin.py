@@ -1,16 +1,17 @@
 from django.contrib import admin
 
-from .models import (
-    SlackFile,
-    SlackMessage,
-)
+from .models import SlackFile, SlackMessage
 
 
 @admin.register(SlackFile)
 class SlackFileAdmin(admin.ModelAdmin):
-    list_display = ['id']
+    list_display = ['id', 'filename']
 
 
 @admin.register(SlackMessage)
 class SlackMessageAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'id',
+        'date',
+        'time',
+    ]

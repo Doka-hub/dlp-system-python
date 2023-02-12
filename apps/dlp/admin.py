@@ -5,4 +5,4 @@ from .models import ReTemplate
 
 @admin.register(ReTemplate)
 class ReTemplateAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'pattern']
