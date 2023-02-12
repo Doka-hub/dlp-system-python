@@ -9,10 +9,11 @@ class EventAPIView(GenericAPIView):
     serializer_class = SlackRequestSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = SlackRequestSerializer(request.data)
+        serializer = self.get_serializer(request.data)
         data = serializer.data
 
-        event_controller = SlackMessageController(**serializer.data)
-        event_controller.find_data()
+        message_controller = SlackMessageController(**serializer.data)
+        if message_controller.is_allowed_event_type:
+            message_controller.find_data()
 
         return Response(data['challenge'])
