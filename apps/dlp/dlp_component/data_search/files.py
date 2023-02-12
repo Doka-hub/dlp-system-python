@@ -1,10 +1,10 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABCMeta
 
 import re
 
 
-class BaseFileDataSearch:
-    FILE_TYPES = None
+class BaseFileDataSearch(metaclass=ABCMeta):
+    file_types = tuple()
 
     def __init__(self, file_bytes: bytes, filename: str, filetype: str):
         self.file_bytes = file_bytes
@@ -27,6 +27,17 @@ class BaseFileDataSearch:
         raise NotImplementedError()
 
 
+class BaseFilesDataSearch:
+    def __init__(self, file_data_search_list: list[BaseFileDataSearch]):
+        self.file_data_search_list = file_data_search_list
+
+    def find_data(self, *args, **kwargs):
+        return [
+            file_data_search.find_data(*args, **kwargs)
+            for file_data_search in self.file_data_search_list
+        ]
+
+
 class NotSupportedFileDataSearch(BaseFileDataSearch):
 
     def get_decoded_file_bytes(self):
@@ -36,18 +47,8 @@ class NotSupportedFileDataSearch(BaseFileDataSearch):
         return
 
 
-class XlsxFileDataSearch(BaseFileDataSearch):
-    FILE_TYPES = ('xlsx',)
-
-    def get_decoded_file_bytes(self):
-        return ''
-
-    def find_data(self, pattern):
-        return
-
-
 class CsvFileDataSearch(BaseFileDataSearch):
-    FILE_TYPES = ('csv',)
+    file_types = ('csv',)
 
     def get_decoded_file_bytes(self):
         return self.file_bytes.decode()
@@ -57,7 +58,7 @@ class CsvFileDataSearch(BaseFileDataSearch):
 
 
 class DocxFileDataSearch(BaseFileDataSearch):
-    FILE_TYPES = ('docx',)
+    file_types = ('docx',)
 
     def get_decoded_file_bytes(self):
         return self.file_bytes.decode()
@@ -67,7 +68,7 @@ class DocxFileDataSearch(BaseFileDataSearch):
 
 
 class TxtFileDataSearch(BaseFileDataSearch):
-    FILE_TYPES = ('txt',)
+    file_types = ('txt',)
 
     def get_decoded_file_bytes(self):
         return self.file_bytes.decode()
