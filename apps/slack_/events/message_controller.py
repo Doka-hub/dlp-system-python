@@ -81,7 +81,9 @@ class SlackMessageController(BaseSlackMessageController):
             if new_text:
                 new_text = f'{new_text} {FileDataFoundErrorText.text}'
             else:
-                new_text = f'{self.data.event.text} {FileDataFoundErrorText.text}'
+                new_text = (
+                    f'{self.data.event.text} {FileDataFoundErrorText.text}'
+                )
 
         return new_text
 
@@ -99,25 +101,30 @@ class SlackMessageController(BaseSlackMessageController):
         re_templates = ReTemplate.objects.all()
         for re_template in re_templates:
             text_data = text_data_search.find_data(re_template.rpattern)
-            files_data = files_data_search.find_data(re_template.rpattern)
+            files_data_search_list = files_data_search.find_data(
+                re_template.rpattern
+            )
 
-            if text_data or files_data:
+            # если найдены данные
+            if text_data or files_data_search_list:
                 # если сообщение еще не сохранено
                 if not slack_message.id:
                     slack_message.save()
 
                 slack_message.re_templates.add(re_template)
 
-                new_text = self.get_new_text(text_data, files_data)
+                new_text = self.get_new_text(text_data, files_data_search_list)
                 file_ids = None
 
-                if files_data:
+                if files_data_search_list:
                     file_ids = get_clean_file_ids(
                         self.data,
-                        [file_data.id for file_data in files_data],
+                        [file_data.id for file_data in files_data_search_list],
                     )
 
-                    slack_file_list = create_slack_files(files_data)
+                    slack_file_list = create_slack_files(
+                        files_data_search_list
+                    )
 
                     slack_message.files.add(*slack_file_list)
 
