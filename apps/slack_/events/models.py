@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -33,6 +35,18 @@ class SlackRequestEventModel(BaseModel):
         else:
             ts = self.event_ts
         return ts
+
+    @property
+    def datetime(self):
+        return datetime.fromtimestamp(float(self.event_ts))
+
+    @property
+    def date(self):
+        return self.datetime.date()
+
+    @property
+    def time(self):
+        return self.datetime.time()
 
 
 class SlackRequestModel(BaseModel):
