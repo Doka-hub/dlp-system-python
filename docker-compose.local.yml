@@ -18,10 +18,10 @@ services:
       - ./:/home/app/web
     env_file:
       - ./.env.local
-    ports:
-      - "8000:8000"
     depends_on:
       - db
+    ports:
+      - "8000:8000"
 
   db:
     container_name: dlp_system_db
@@ -33,6 +33,31 @@ services:
       - ./.env.local.db
     ports:
       - 5432:5432
+
+
+  redis:
+    container_name: dlp_system_redis
+    restart: always
+    command: sh -c 'exec redis-server'
+    image: redis:7.0.2-alpine
+    volumes:
+      - ../redis_data:/var/lib/redis/data/
+
+  celery_worker:
+    container_name: dlp_system_celery_worker
+    restart: on-failure
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: sh -c "celery -A dlp_system worker -l info"
+    volumes:
+      - ./:/home/app/web
+    depends_on:
+      - web
+      - redis
+    env_file:
+      - .env.local
+
 
 
 volumes:
