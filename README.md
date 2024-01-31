@@ -2,33 +2,30 @@
 
 ---
 ### Description
-Минимальная версия системы по поиску потенциально важных данных в Slack,
-основанная на регулярных выражениях и написанная на Django. 
+MVP service to search potentionality important data in Slack channels based on regular expresses and written in Django.
 
-Сервис написан с учетом возможности расширения. 
+Service developed with the capability to easily expand it.
 
-На данный момент для поиска данных в файлах подерживаются следующие
-типы:
+Now, it supports these types of files:
 - csv
 - docx
 - txt
 
-После нахождения потенциально важных данных сообщение изменяется,
-а файлы, содержащие эти данные удаляются.
 
+After finding important data the message is altered, and files and the files containing these data are deleted.
 ### Quickstart
 
 
-1. Скопировать .envs
+1. Copy .envs
 ```
 cp .env.local.dist .env.local
 cp .env.local.db.dist .env.local.db
 ```
-2. Заполнить `SLACK_USER_TOKEN` (User OAuth Token) в .env.local
+2. Fill `SLACK_USER_TOKEN` (User OAuth Token) in .env.local
 ![](../../Desktop/Снимок экрана 2023-02-12 в 09.48.02.png)
-3. Запустить
+3. Start
 ```
 docker-compose -f docker-compose.local.yml up -d --build
 ```
-4. Создать суперпользователя, regex-шаблон в админке
-5. Чтобы посмотреть на результат работы системы нужно написать текст, отправить поддерживаемый файл (системой) в Slack
+4. Create superadmin, regex-template in admin panel `/admin`
+5. To check the result of service working, you should send some important data
